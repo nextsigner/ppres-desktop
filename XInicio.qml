@@ -25,17 +25,17 @@ Item {
                 anchors.horizontalCenter: parent.horizontalCenter
             }
             UText{
-                text: 'Aplicación para la gestión y control\nde folios de alumnos de Taekwondo.'
+                text: 'Aplicación para la gestión y control\nde presupuestos de productos.'
                 font.pixelSize: app.fs
                 horizontalAlignment: Text.AlignHCenter
                 anchors.horizontalCenter: parent.horizontalCenter
             }
         }
-        UText{
-            id: labelCountProds
-            text: '<b>Cantidad de Alumnos Registrados: </b> Contando...'
-            font.pixelSize: app.fs
-        }       
+//        UText{
+//            id: labelCountProds
+//            text: '<b>Cantidad de productos Registrados: </b> Contando...'
+//            font.pixelSize: app.fs
+//        }
     }
     Timer{
         running: r.visible
@@ -46,7 +46,7 @@ Item {
     function actualizar(){
 //        let sql = 'select * from '+app.tableName2
 //        let rows = unik.getSqlData(sql)
-//        labelCountProds.text='<b>Cantidad de Alumnos Registrados: </b>'+rows.length
+//        labelCountProds.text='<b>Cantidad de productos Registrados: </b>'+rows.length
 //        sql = 'select * from '+app.tableName1
 //        rows = unik.getSqlData(sql)
 //        labelCountProds.text+='<br /><b>Cantidad de Certificados Registrados: </b>'+rows.length
