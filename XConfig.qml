@@ -81,7 +81,12 @@ Item {
             onClicked: {
                     let cmd='-git=https://github.com/nextsigner/ppres-desktop.git'
                     unik.setUnikStartSettings(cmd)
-                    unik.restartApp()
+                    if(Qt.platform.os==='linux'){
+                        unik.restartApp(cmd)
+                    }else{
+                        unik.restartApp()
+                    }
+
             }
         }
         UText{
