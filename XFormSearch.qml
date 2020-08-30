@@ -27,7 +27,8 @@ Item {
         lv.focus=visible
         tiSearch.text=''
         if(visible&&tiSearch.text===''){
-            search()
+            getSearch(tiSearch.text)
+            //search()
             lv.currentIndex=usFormSearch.uCurrentIndex
         }
         setBtnDeleteText()
@@ -57,14 +58,15 @@ Item {
             UTextInput{
                 id: tiSearch
                 label: rbCod.checked?'Buscar Folio:':'Buscar Nombre:'
-                width: app.fs*18            
+                width: app.fs*18
                 KeyNavigation.down: lv
                 KeyNavigation.tab: lv
                 itemNextFocus: lv
                 onTextChanged: {
                     r.buscando=true
                     //lv.currentIndex=0
-                    search()
+                    //search()
+                    getSearch(tiSearch.text)
                 }
             }
             BotonUX{
@@ -277,14 +279,13 @@ Item {
                     id: lm
                     function addDato(p1, p2, p3, p4, p5, p6, p7){
                         return{
-                            v1: p1,
-                            v2: p2,
-                            v3: p3,
-                            v4:p4,
-                            v5: p5,
-                            v6: p6,
+                            v1: p1,//descripcion
+                            v2: p2,//codigo
+                            v3: p3,//precioinstalacion
+                            v4:p4,//precioabono
+                            v5: p5,//riesgoadicional
+                            v6: p6,//observaciones
                             v7: false,
-                            v8: p7
                         }
                     }
                 }
@@ -531,14 +532,14 @@ Item {
         }
     }
     function deleteRows(){
-//        for(var i=0;i<lv.children[0].children.length; i++){
-//            let id=lv.children[0].children[i].rowId
-//            //uLogView.showLog('s: '+lv.children[0].children[i].selected)
-//            if(id&&lv.children[0].children[i].selected){
-//                let sql='delete from '+app.tableName1+' where id='+id
-//                unik.sqlQuery(sql)
-//            }
-//        }
+        //        for(var i=0;i<lv.children[0].children.length; i++){
+        //            let id=lv.children[0].children[i].rowId
+        //            //uLogView.showLog('s: '+lv.children[0].children[i].selected)
+        //            if(id&&lv.children[0].children[i].selected){
+        //                let sql='delete from '+app.tableName1+' where id='+id
+        //                unik.sqlQuery(sql)
+        //            }
+        //        }
         botModify.visible=false
         for(var i=0;i<lm.count; i++){
             let id=lm.get(i).v1
@@ -549,7 +550,7 @@ Item {
             }
         }
         botDelete.visible=false
-        search()
+        //search()
     }
     function setCbs(){
         cbSelectedAll.checked=selectedAll
@@ -583,7 +584,7 @@ Item {
         if(cantSel===1){
             botModify.visible=true
         }else{
-               botModify.visible=false
+            botModify.visible=false
         }
         //uLogView.showLog('Cantidad: '+cantSel)
     }
@@ -631,5 +632,49 @@ Item {
             return true
         }
         return false
+    }
+
+    function getSearch(consulta){
+        let url=app.serverUrl+':'+app.portRequest+'/ppres/searchproducto?consulta='+consulta
+        console.log('Get '+app.moduleName+' server from '+url)
+        var req = new XMLHttpRequest();
+        req.open('GET', url, true);
+        req.onreadystatechange = function (aEvt) {
+            if (req.readyState === 4) {
+                if(req.status === 200){
+                    let json=JSON.parse(req.responseText)
+                    //console.log(req.responseText)
+                    setSearchResult(json)
+                }else{
+                    console.log("Error el cargar el servidor de Mercurio. Code 1\n");
+                }
+            }
+        };
+        req.send(null);
+    }
+    function setSearchResult(json){
+        for(var i=0;i<Object.keys(json.productos).length;i++){
+            //Rows 'descripcion', 'codigo', 'precioinstalacion', 'precioabono', 'adicionalriesgo', 'observaciones'
+            //                console.log('P1'+i+': '+json.productos[i].descripcion)
+            //                console.log('P2'+i+': '+json.productos[i].codigo)
+            //                console.log('P3'+i+': '+json.productos[i].precioinstalacion)
+            //                console.log('P4'+i+': '+json.productos[i].precioabono)
+            //                console.log('P5'+i+': '+json.productos[i].adicionalriesgo)
+            //                console.log('P6'+i+': '+json.productos[i].observaciones)
+            //return
+            let existe=false
+            let cant=0
+            for(var i2=0;i2<xGetPres.list.listModel.count;i2++){
+                //console.log('RS --> numId:['+xGetPres.list.listModel.get(i2).numId+'] id:['+json.productos[i]._id+']')
+                if(xGetPres.list.listModel.get(i2).numId===json.productos[i]._id){
+                    existe=true
+                    cant=xGetPres.list.listModel.get(i2).cant
+                    break
+                }
+            }
+            lm.append(lm.addDato(json.productos[i]._id, json.productos[i].descripcion, json.productos[i].codigo, json.productos[i].precioinstalacion, json.productos[i].precioabono, json.productos[i].adicionalriesgo, json.productos[i].observaciones, cant))
+
+        }
+        xListProdSearch.focus=true
     }
 }
