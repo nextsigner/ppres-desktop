@@ -14,7 +14,7 @@ Item {
         Image {
             id: logo
             source: "file:./img/escudo.png"
-            width: app.fs*20
+            width: app.fs*10
             height: width
         }
         Column{
@@ -44,11 +44,11 @@ Item {
         onTriggered: actualizar()
     }
     function actualizar(){
-        let sql = 'select * from '+app.tableName2
-        let rows = unik.getSqlData(sql)
-        labelCountProds.text='<b>Cantidad de Alumnos Registrados: </b>'+rows.length
-        sql = 'select * from '+app.tableName1
-        rows = unik.getSqlData(sql)
-        labelCountProds.text+='<br /><b>Cantidad de Certificados Registrados: </b>'+rows.length
+//        let sql = 'select * from '+app.tableName2
+//        let rows = unik.getSqlData(sql)
+//        labelCountProds.text='<b>Cantidad de Alumnos Registrados: </b>'+rows.length
+//        sql = 'select * from '+app.tableName1
+//        rows = unik.getSqlData(sql)
+//        labelCountProds.text+='<br /><b>Cantidad de Certificados Registrados: </b>'+rows.length
     }
 }
