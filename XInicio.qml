@@ -20,7 +20,7 @@ Item {
         Column{
             anchors.horizontalCenter: parent.horizontalCenter
             UText{
-                text: '<b>Taekwondo</b>'
+                text: '<b>'+app.moduleName+'</b>'
                 font.pixelSize: app.fs*2
                 anchors.horizontalCenter: parent.horizontalCenter
             }
