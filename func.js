@@ -16,37 +16,18 @@ function setBd() {
     let iniciado=unik.sqliteInit(bd)
     //uLogView.showLog('Iniciado: '+iniciado)
 
-    let sql='CREATE TABLE IF NOT EXISTS '+app.tableName1
+    /*let sql='CREATE TABLE IF NOT EXISTS '+app.tableName1
         +'('
         +'id INTEGER PRIMARY KEY AUTOINCREMENT,'
-        +app.colsCertificados[0]+' TEXT NOT NULL,'
-        +app.colsCertificados[1]+' TEXT NOT NULL,'
-        +app.colsCertificados[2]+' TEXT NOT NULL,'
-        +app.colsCertificados[3]+' NUMERIC NOT NULL,'
-    +app.colsCertificados[4]+' NUMERIC NOT NULL,'
-        +app.colsCertificados[5]+' NUMERIC NOT NULL'
+        +app.colsNamesProds[0]+' TEXT NOT NULL,'
+        +app.colsNamesProds[1]+' TEXT NOT NULL,'
+        +app.colsNamesProds[2]+' TEXT NOT NULL,'
+        +app.colsNamesProds[3]+' NUMERIC NOT NULL,'
+    +app.colsNamesProds[4]+' NUMERIC NOT NULL,'
+        +app.colsNamesProds[5]+' NUMERIC NOT NULL'
         +')'
     unik.sqlQuery(sql)
-    sql='CREATE TABLE IF NOT EXISTS '+app.tableName2
-        +'('
-        +'id INTEGER PRIMARY KEY AUTOINCREMENT,'
-        +app.colsDatosAlumnos[0]+' TEXT NOT NULL,'
-        +app.colsDatosAlumnos[1]+' TEXT NOT NULL,'
-        +app.colsDatosAlumnos[2]+' TEXT NOT NULL,'
-        +app.colsDatosAlumnos[3]+' TEXT  NOT NULL,'
-        +app.colsDatosAlumnos[4]+' TEXT  NOT NULL'
-        +')'
-    unik.sqlQuery(sql)
-    sql='CREATE TABLE IF NOT EXISTS eventos'
-        +'('
-        +'id INTEGER PRIMARY KEY AUTOINCREMENT,'
-        +'evento TEXT NOT NULL,'
-        +' tablaefectada TEXT NOT NULL,'
-        +'idafectado NUMERIC NOT NULL,'
-        +'ms NUMERIC  NOT NULL'
-        +')'
-    unik.sqlQuery(sql)
-    //console.log('Ejecutado: '+ejecutado)
+    */
 }
 
 function setEvent(e, t, i, m){

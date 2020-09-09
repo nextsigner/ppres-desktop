@@ -19,12 +19,15 @@ ApplicationWindow {
 
     //Variables Globales
     property string cAdmin: 'Sistema'
+    property string serverUrl: 'http://66.97.46.73'
+    property int portRequest: 8080
+    property int portFiles: 8081
 
     //Para la Tabla Alumnos
     property string tableName1: 'certificados'
     property string tableName2: 'alumnos'
-    property var colsCertificados: ['folio', 'grado', 'nombre', 'fechanac', 'fechacert', 'idalumno']
-    property var colsNameCertificados: ['Folio', 'Grado', 'Nombre', 'Fecha de Nacimiento', 'Fecha de Certificado']
+    //property var colsCertificados: ['folio', 'grado', 'nombre', 'fechanac', 'fechacert', 'idalumno']
+    property var colsNamesProds: ['Descripción', 'Código', 'Precio de Instalación', 'Precio de Abono', 'Adicional Riesgo', 'Observaciones']
 
     property var colsDatosAlumnos: ['nombre', 'edad', 'domicilio', 'telefono', 'email']
     property var colsNameDatosAlumnos: ['Nombre', 'Edad', 'Domicilio', 'Teléfono', 'E-Mail']
@@ -96,7 +99,7 @@ ApplicationWindow {
                 XFormSearch{
                     id: xFormSearch
                     visible: app.mod===1&&!xLogin.visible
-                    //currentTableName: xFormInsert.tableName
+                    //currentTableName:  hrt.tableName
                 }
                 XConfig{id:xConfig; visible: app.mod===2&&!xLogin.visible}
                 XAbout{visible: app.mod===3}
@@ -166,10 +169,10 @@ ApplicationWindow {
     Shortcut{
         sequence: 'Up'
         onActivated: {
-            if(xFormInsert.visible){
-                xFormInsert.upForm()
-                return
-            }
+//            if(xFormInsert.visible){
+//                xFormInsert.upForm()
+//                return
+//            }
             if(xFormSearch.visible){
                 xFormSearch.upRow()
                 return
@@ -180,10 +183,10 @@ ApplicationWindow {
     Shortcut{
         sequence: 'Down'
         onActivated: {
-            if(xFormInsert.visible){
-                xFormInsert.downForm()
-                return
-            }
+//            if(xFormInsert.visible){
+//                xFormInsert.downForm()
+//                return
+//            }
             if(xFormSearch.visible){
                 xFormSearch.downRow()
                 return
@@ -193,25 +196,25 @@ ApplicationWindow {
     Shortcut{
         sequence: 'Right'
         onActivated: {
-            xFormInsert.rightForm()
+            //xFormInsert.rightForm()
         }
     }
     Shortcut{
         sequence: 'Left'
         onActivated: {
-            xFormInsert.leftForm()
+            //xFormInsert.leftForm()
         }
     }
     Shortcut{
         sequence: 'Shift+Right'
         onActivated: {
-            xFormInsert.shiftRightForm()
+            //xFormInsert.shiftRightForm()
         }
     }
     Shortcut{
         sequence: 'Shift+Left'
         onActivated: {
-            xFormInsert.shiftLeftForm()
+            //xFormInsert.shiftLeftForm()
         }
     }
     Shortcut{
@@ -221,14 +224,14 @@ ApplicationWindow {
                 xLogin.login()
                 return
             }
-            if(xFormInsert.visible){
-                xFormInsert.enterForm()
-                return
-            }
-            if(xFormInsertDatosAl.visible){
-                xFormInsertDatosAl.enterForm()
-                return
-            }
+//            if(xFormInsert.visible){
+//                xFormInsert.enterForm()
+//                return
+//            }
+//            if(xFormInsertDatosAl.visible){
+//                xFormInsertDatosAl.enterForm()
+//                return
+//            }
         }
     }     
     Component.onCompleted: {
@@ -251,17 +254,31 @@ ApplicationWindow {
         let h=0
         let d=new Date(Date.now())
         let d2=new Date(Date.now())
-
-        /*for(var i=0;i<100;i++){
-            d.setHours(d.getHours()+26*h)
-            d2.setHours(d2.getHours()+60*h)
-            //let sql='insert into alumnos(folio, grado, nombre, fechanac, fechacert)values(\'adasdf'+i+'\',\'32'+i+'\',\'gdgg'+i+'\',\''+d.getTime()+'\',\''+d2.getTime()+'\')'
-            //'nombre', 'edad', 'domicilio', 'telefono', 'email']
-            let sql='insert into alumnos(nombre, edad, domicilio, telefono, email)values(\'nom'+i+'\',\''+i+'\', \'dom'+i+'\',  \'tel'+i+'\',\'email '+i+'\')'
-            unik.sqlQuery(sql)
-            //unik.
-            h++
-        }*/
+        getServerUrl()
+    }
+    function getServerUrl(){
+        let url='https://raw.githubusercontent.com/nextsigner/nextsigner.github.io/master/ppres_server'
+        console.log('Get '+app.moduleName+' server from '+url)
+        var req = new XMLHttpRequest();
+        req.open('GET', url, true);
+        req.onreadystatechange = function (aEvt) {
+            if (req.readyState === 4) {
+                if(req.status === 200){
+                    let m0=req.responseText.split('|')
+                    if(m0.length>2){
+                        app.serverUrl=m0[0]
+                        app.portRequest=m0[1]
+                        app.portFiles=m0[2]
+                        console.log('Ppres Server='+app.serverUrl+' '+app.portRequest+' '+app.portFiles)
+                    }else{
+                        console.log("Error el cargar el servidor de Ppres. Code 2\n");
+                    }
+                }else{
+                    console.log("Error el cargar la url del servidor Ppres. Code 1\n");
+                }
+            }
+        };
+        req.send(null);
     }
     function getNewBdName(){
         let d=new Date(Date.now())

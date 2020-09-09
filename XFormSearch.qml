@@ -134,8 +134,8 @@ Item {
             UText{text: '<b>Ordenar por:</b>';anchors.verticalCenter: parent.verticalCenter}
             ComboBox{
                 id: cbPor
-                model: app.colsNameCertificados
-                currentIndex: app.colsNameCertificados.indexOf(usFormSearch.searchBy)
+                model: app.colsNamesProds
+                currentIndex: app.colsNamesProds.indexOf(usFormSearch.searchBy)
                 anchors.verticalCenter: parent.verticalCenter
                 onCurrentTextChanged:{
                     usFormSearch.searchBy=currentText
@@ -180,7 +180,7 @@ Item {
                 id:xRowTitDes
                 width: lv.width
                 height: app.fs*4
-                property var anchos: [0.05,0.1, 0.25,0.4,0.1,0.1]
+                property var anchos: [0.05,0.3, 0.1,0.1,0.1,0.1,0.25]
                 property string fontColor: app.c1
                 Row{
                     anchors.centerIn: parent
@@ -228,7 +228,7 @@ Item {
                         }
                     }
                     Repeater{
-                        model: app.colsNameCertificados
+                        model: app.colsNamesProds
                         Rectangle{
                             width: xRowTitDes.width*xRowTitDes.anchos[index+1]
                             height:xRowTitDes.height
@@ -236,7 +236,7 @@ Item {
                             border.color: app.c4
                             color: app.c2
                             UText{
-                                text: '<b>'+(''+app.colsNameCertificados[index]).replace(/ /g, '<br />')+'</b>'
+                                text: '<b>'+(''+app.colsNamesProds[index]).replace(/ /g, '<br />')+'</b>'
                                 anchors.centerIn: parent
                                 color: app.c1//xRowTitDes.fontColor
                                 horizontalAlignment: Text.AlignHCenter
@@ -279,12 +279,13 @@ Item {
                     id: lm
                     function addDato(p1, p2, p3, p4, p5, p6, p7){
                         return{
-                            v1: p1,//descripcion
-                            v2: p2,//codigo
-                            v3: p3,//precioinstalacion
-                            v4:p4,//precioabono
-                            v5: p5,//riesgoadicional
-                            v6: p6,//observaciones
+                            v1: p1,//id
+                            v2: p2,//descripcion
+                            v3: p3,//codigo
+                            v4:p4,//precioinstalacion
+                            v5: p5,//precioabono
+                            v6: p6,//riesgoadicional
+                            v8: p7,//observaciones
                             v7: false,
                         }
                     }
@@ -294,15 +295,15 @@ Item {
                     Rectangle{
                         id:xRowDes
                         width: parent.width
-                        height: app.fs*2//parseInt(v1)!==-10?app.fs*2:app.fs*3
+                        height: rowData.height+app.fs*2//parseInt(v1)!==-10?app.fs*2:app.fs*3
                         radius: app.fs*0.1
                         border.width: 2
                         anchors.horizontalCenter: parent.horizontalCenter
                         color: cbRow.checked?app.c1:app.c2
                         property string fontColor: cbRow.checked?app.c1:app.c2
-                        property var arrayModeloDatos: [v2, v3, v4, v5, v6]//[v2, v3, v4, v5, v6]
+                        property var arrayModeloDatos: [v2, v3, v4, v5, v6, v8]//[v2, v3, v4, v5, v6]
                         property bool selected:v7//r.idsSelected.length>0?parseInt(idsSelected.indexOf(v1)+1):v7
-                        property int rowId: v1
+                        property string rowId: v1
                         Keys.onDownPressed: downRow()
                         Keys.onUpPressed: upRow()
                         Keys.onSpacePressed: {
@@ -318,10 +319,12 @@ Item {
                         }
                         MouseArea{
                             anchors.fill: parent
-                            onDoubleClicked: xFormInsert.loadModify(v1, v2, v3, v4, v5, v6, v8)
+                            //onDoubleClicked: xFormInsert.loadModify(v1, v2, v3, v4, v5, v6, v8)
                         }
                         Row{
+                            id: rowData
                             anchors.centerIn: parent
+                            property int uH: app.fs*2
                             Rectangle{
                                 width: xRowDes.width*xRowTitDes.anchos[0]
                                 height:xRowDes.height
@@ -401,17 +404,21 @@ Item {
                                 }
                             }
                             Repeater{
-                                model: app.colsNameCertificados
+                                model: app.colsNamesProds
                                 Rectangle{
                                     width: xRowDes.width*xRowTitDes.anchos[index+1]
-                                    height:xRowDes.height
+                                    height:index===0?txtCelda.contentHeight+app.fs:xRowDes.height
                                     border.width: 2
                                     border.color:cbRow.checked?app.c1:app.c2
                                     color: cbRow.checked?app.c2:app.c1
                                     clip: true
+                                    //color: index===0?'red':'green'
+                                    anchors.verticalCenter: parent.verticalCenter
                                     UText{
                                         id: txtCelda
                                         text: xRowDes.arrayModeloDatos[index]
+                                        width: parent.width-app.fs
+                                        wrapMode: Text.WordWrap
                                         anchors.centerIn: parent
                                         color: xRowDes.fontColor
                                         horizontalAlignment: Text.AlignHCenter
@@ -591,8 +598,8 @@ Item {
     function modifyRow(){
         for(var i=0;i<lm.count; i++){
             if(lm.get(i).v7){
-                xFormInsert.modificando=true
-                xFormInsert.loadModify(lm.get(i).v1, lm.get(i).v2, lm.get(i).v3, lm.get(i).v4, lm.get(i).v5,  lm.get(i).v6,  lm.get(i).v8)
+                //xFormInsert.modificando=true
+                //xFormInsert.loadModify(lm.get(i).v1, lm.get(i).v2, lm.get(i).v3, lm.get(i).v4, lm.get(i).v5,  lm.get(i).v6,  lm.get(i).v8)
                 break
             }
         }
@@ -664,17 +671,25 @@ Item {
             //return
             let existe=false
             let cant=0
-            for(var i2=0;i2<xGetPres.list.listModel.count;i2++){
+            /*for(var i2=0;i2<xGetPres.list.listModel.count;i2++){
                 //console.log('RS --> numId:['+xGetPres.list.listModel.get(i2).numId+'] id:['+json.productos[i]._id+']')
                 if(xGetPres.list.listModel.get(i2).numId===json.productos[i]._id){
                     existe=true
                     cant=xGetPres.list.listModel.get(i2).cant
                     break
                 }
-            }
-            lm.append(lm.addDato(json.productos[i]._id, json.productos[i].descripcion, json.productos[i].codigo, json.productos[i].precioinstalacion, json.productos[i].precioabono, json.productos[i].adicionalriesgo, json.productos[i].observaciones, cant))
+            }*/
+            lm.append(lm.addDato(
+                          json.productos[i]._id,
+                          json.productos[i].descripcion,
+                          json.productos[i].codigo,
+                          json.productos[i].precioinstalacion,
+                          json.productos[i].precioabono,
+                          json.productos[i].adicionalriesgo,
+                          json.productos[i].observaciones, cant
+                          ))
 
         }
-        xListProdSearch.focus=true
+        //xListProdSearch.focus=true
     }
 }
