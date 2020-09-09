@@ -8,7 +8,14 @@ Rectangle {
     border.width: 2
     property bool selected: false
     property string text: '?'
-
+    signal clicked
+    MouseArea{
+        anchors.fill: r
+        onClicked:{
+            r.selected=!selected
+             r.clicked()
+        }
+    }
     UText{
         id: txtData
         text: r.text

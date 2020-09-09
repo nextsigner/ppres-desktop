@@ -57,7 +57,7 @@ Item {
             anchors.horizontalCenter: parent.horizontalCenter
             UTextInput{
                 id: tiSearch
-                label: rbCod.checked?'Buscar Folio:':'Buscar Nombre:'
+                label: 'Buscar Producto:'
                 width: app.fs*18
                 KeyNavigation.down: lv
                 KeyNavigation.tab: lv
