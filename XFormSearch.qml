@@ -27,7 +27,7 @@ Item {
         lv.focus=visible
         tiSearch.text=''
         if(visible&&tiSearch.text===''){
-            getSearch(tiSearch.text)
+            //getSearch(tiSearch.text)
             //search()
             lv.currentIndex=usFormSearch.uCurrentIndex
         }
@@ -62,11 +62,12 @@ Item {
                 KeyNavigation.down: lv
                 KeyNavigation.tab: lv
                 itemNextFocus: lv
+                onSeted: getSearch(tiSearch.text)
                 onTextChanged: {
                     r.buscando=true
                     //lv.currentIndex=0
                     //search()
-                    getSearch(tiSearch.text)
+                    //getSearch(tiSearch.text)
                 }
             }
             BotonUX{
@@ -180,57 +181,14 @@ Item {
                 id:xRowTitDes
                 width: lv.width
                 height: app.fs*4
-                property var anchos: [0.05,0.3, 0.1,0.1,0.1,0.1,0.25]
+                property var anchos: [0.35, 0.1,0.1,0.1,0.1,0.25]
                 property string fontColor: app.c1
                 Row{
                     anchors.centerIn: parent
-                    Rectangle{
-                        width: xRowTitDes.width*xRowTitDes.anchos[0]
-                        height:xRowTitDes.height
-                        border.width: 2
-                        border.color: app.c2
-                        color: app.c1
-                        CheckBox{
-                            id: cbSelectedAll
-                            anchors.centerIn: parent
-                            property bool setearTodos: true
-                            onClicked: cbSelectedAll.setearTodos=true
-                            onCheckedChanged: {
-                                //r.selectedAll=checked
-                                if(!setearTodos){
-                                    cbSelectedAll.setearTodos=true
-                                    setBtnDeleteText()
-                                    return
-                                }
-                                for(var i=0;i<lm.count; i++){
-                                    lm.get(i).v7=checked
-                                }
-                                setBtnDeleteText()
-                            }
-                        }
-                        MouseArea{
-                            anchors.fill: parent
-                            onClicked: {
-                                cbSelectedAll.checked=!cbSelectedAll.checked
-                                r.idsSelected=[]
-                                search()
-                                /*if(!cbSelectedAll.checked){
-
-                                }else{
-                                    r.idsSelected=[]
-                                    cbSelToTop.checked=false
-                                }*/
-                                for(var i=0;i<lm.count; i++){
-                                    lm.get(i).v7=cbSelectedAll.checked
-                                }
-                                setBtnDeleteText()
-                            }
-                        }
-                    }
                     Repeater{
                         model: app.colsNamesProds
                         Rectangle{
-                            width: xRowTitDes.width*xRowTitDes.anchos[index+1]
+                            width: xRowTitDes.width*xRowTitDes.anchos[index]
                             height:xRowTitDes.height
                             border.width: 2
                             border.color: app.c4
@@ -273,20 +231,20 @@ Item {
                 displayMarginBeginning: lm.count*app.fs*2
                 displayMarginEnd: lm.count*app.fs*2
                 onCurrentIndexChanged: {
-                    usFormSearch.uCurrentIndex=currentIndex
+                    //usFormSearch.uCurrentIndex=currentIndex
                 }
                 ListModel{
                     id: lm
                     function addDato(p1, p2, p3, p4, p5, p6, p7){
                         return{
                             v1: p1,//id
-                            v2: p2,//descripcion
-                            v3: p3,//codigo
-                            v4:p4,//precioinstalacion
-                            v5: p5,//precioabono
-                            v6: p6,//riesgoadicional
-                            v8: p7,//observaciones
-                            v7: false,
+                            descripcion: p2,//descripcion
+                            codigo: p3,//codigo
+                            precioinstalacion:p4,
+                            precioabono: p5,
+                            adicionalriesgo: p6,
+                            observaciones: p7,
+                            v8: false
                         }
                     }
                 }
@@ -295,170 +253,56 @@ Item {
                     Rectangle{
                         id:xRowDes
                         width: parent.width
-                        height: rowData.height+app.fs*2//parseInt(v1)!==-10?app.fs*2:app.fs*3
-                        radius: app.fs*0.1
+                        height: rowData.height//+app.fs*2//parseInt(v1)!==-10?app.fs*2:app.fs*3
                         border.width: 2
-                        anchors.horizontalCenter: parent.horizontalCenter
-                        color: cbRow.checked?app.c1:app.c2
-                        property string fontColor: cbRow.checked?app.c1:app.c2
-                        property var arrayModeloDatos: [v2, v3, v4, v5, v6, v8]//[v2, v3, v4, v5, v6]
-                        property bool selected:v7//r.idsSelected.length>0?parseInt(idsSelected.indexOf(v1)+1):v7
                         property string rowId: v1
-                        Keys.onDownPressed: downRow()
-                        Keys.onUpPressed: upRow()
+                        //Keys.onDownPressed: downRow()
+                        //Keys.onUpPressed: upRow()
                         Keys.onSpacePressed: {
-                            lv.currentIndex=index
+                            /*lv.currentIndex=index
                             cbRow.checked=!cbRow.checked
                             if(cbSelToTop.checked){
                                 search()
-                            }
+                            }*/
                             //uLogView.showLog('Spacing'+index)
-                        }
-                        onSelectedChanged: {
-                            cbRow.checked=selected
-                        }
-                        MouseArea{
-                            anchors.fill: parent
-                            //onDoubleClicked: xFormInsert.loadModify(v1, v2, v3, v4, v5, v6, v8)
                         }
                         Row{
                             id: rowData
-                            anchors.centerIn: parent
-                            property int uH: app.fs*2
-                            Rectangle{
-                                width: xRowDes.width*xRowTitDes.anchos[0]
-                                height:xRowDes.height
-                                border.width: 2
-                                border.color: app.c2
-                                color:app.c1
-                                CheckBox{
-                                    id: cbRow
-                                    checked: xRowDes.selected
-                                    anchors.centerIn: parent
-                                    onCheckedChanged: {
-                                        if(!checked){
-                                            cbSelectedAll.setearTodos=false
-                                            cbSelectedAll.checked=false
-                                            //r.selectedAll=false
-                                        }
-                                        v7=checked
-                                        setBtnDeleteText()
-                                        if(!tiSearch.textInput.focus){
-                                            lv.focus=true
-                                        }
-                                        let allSelected=true
-                                        for(var i=0;i<lm.count; i++){
-                                            if(!lm.get(i).v7){
-                                                allSelected=false
-                                                break
-                                            }
-                                        }
-                                        if(allSelected){
-                                            cbSelectedAll.setearTodos=false
-                                            cbSelectedAll.checked=allSelected
-                                        }
-                                        if(checked){
-                                            if(r.idsSelected.indexOf(parseInt(v1))<0){
-                                                r.idsSelected.push(parseInt(v1))
-                                            }
-                                        }else{
-                                            r.idsSelected = JS.removeItemFromArr(r.idsSelected, parseInt(v1))
-                                        }
-                                        //cant.text=r.idsSelected.toString()
-
-                                    }
-                                    Timer{
-                                        id: tSearchSelToTop
-                                        running: false
-                                        repeat: false
-                                        interval: 500
-                                        onTriggered: search()
-                                    }
-                                    MouseArea{
-                                        anchors.fill: parent
-                                        onDoubleClicked: {
-                                            lv.currentIndex=index
-                                            setBtnDeleteText()
-                                        }
-                                        onClicked: {
-                                            cbRow.checked=!cbRow.checked
-                                            if(cbSelToTop.checked){
-                                                search()
-                                            }
-                                            setBtnDeleteText()
-                                        }
-                                    }
-                                    Rectangle{
-                                        anchors.centerIn: parent
-                                        width: parent.contentItem.width
-                                        height: parent.contentItem.height
-                                        border.width: 3
-                                        border.color: 'red'
-                                        color: 'transparent'
-                                        visible: index===lv.currentIndex
-                                        z:parent.z+100000
-                                        onVisibleChanged: {
-                                            if(visible)lv.currentIndex=index
-                                        }
-                                    }
-                                }
+                            anchors.verticalCenter: parent.verticalCenter
+                            XCelda{
+                                id: xDes
+                                width:xRowTitDes.width*xRowTitDes.anchos[0]
+                                text: descripcion
                             }
-                            Repeater{
-                                model: app.colsNamesProds
-                                Rectangle{
-                                    width: xRowDes.width*xRowTitDes.anchos[index+1]
-                                    height:index===0?txtCelda.contentHeight+app.fs:xRowDes.height
-                                    border.width: 2
-                                    border.color:cbRow.checked?app.c1:app.c2
-                                    color: cbRow.checked?app.c2:app.c1
-                                    clip: true
-                                    //color: index===0?'red':'green'
-                                    anchors.verticalCenter: parent.verticalCenter
-                                    UText{
-                                        id: txtCelda
-                                        text: xRowDes.arrayModeloDatos[index]
-                                        width: parent.width-app.fs
-                                        wrapMode: Text.WordWrap
-                                        anchors.centerIn: parent
-                                        color: xRowDes.fontColor
-                                        horizontalAlignment: Text.AlignHCenter
-                                        //color: index===3||index===4?'red':'blue'
-                                        visible: false
-                                        Component.onCompleted: {
-                                            if(index===3||index===4){
-                                                let d=new Date(parseInt(xRowDes.arrayModeloDatos[index]))
-                                                let dia=''+d.getDate()
-                                                if(d.getDate()<10){
-                                                    dia='0'+dia
-                                                }
-                                                let mes=''+parseInt(d.getMonth()+1)
-                                                if(d.getMonth()+1<10){
-                                                    mes='0'+mes
-                                                }
-                                                let an=''+d.getFullYear()
-                                                let s=''+dia+'/'+mes+'/'+an
-                                                text=s
-                                            }
-                                            visible=true
-                                        }
-                                    }
-                                }
+                            XCelda{
+                                id: xCodigo
+                                width:xRowTitDes.width*xRowTitDes.anchos[1]
+                                height: xDes.height
+                                text: codigo
                             }
-                        }
-                        //                        UText{
-                        //                            text: '<b>'+parseInt(index +1)+'</b>'
-                        //                            font.pixelSize: app.fs*0.6
-                        //                            color: 'red'
-                        //                            anchors.verticalCenter: parent.verticalCenter
-                        //                            anchors.left: parent.left
-                        //                            anchors.leftMargin: app.fs*0.5
-                        //                        }
-                        Component.onCompleted: {
-                            if(idsSelected.indexOf(parseInt(v1))>=0){
-                                xRowDes.selected=true
-                            }else{
-                                cbSelectedAll.setearTodos=false
-                                cbSelectedAll.checked=false
+                            XCelda{
+                                id: xPrecioinstalacion
+                                width:xRowTitDes.width*xRowTitDes.anchos[2]
+                                height: xDes.height
+                                text: '$'+precioinstalacion
+                            }
+                            XCelda{
+                                id: xPrecioabono
+                                width:xRowTitDes.width*xRowTitDes.anchos[3]
+                                height: xDes.height
+                                text: '$'+precioabono
+                            }
+                            XCelda{
+                                id: xAdicionalRiesgo
+                                width:xRowTitDes.width*xRowTitDes.anchos[4]
+                                height: xDes.height
+                                text: '$'+adicionalriesgo
+                            }
+                            XCelda{
+                                id: xObservaciones
+                                width:xRowTitDes.width*xRowTitDes.anchos[5]
+                                height: xDes.height
+                                text: observaciones
                             }
                         }
                     }
@@ -466,11 +310,6 @@ Item {
             }
         }
     }
-    //        UText{
-    //            text: 'INDEX: '+lv.focus+' '+lv.currentIndex+' Cant: '+lm.count
-    //            font.pixelSize: app.fs*2
-    //            color: 'red'
-    //        }
     Component.onCompleted: {
         if(r.visible){
             search()
@@ -478,6 +317,13 @@ Item {
             //tiSearch.focus=true
         }
     }
+    function enterForm(){
+        if(tiSearch.textInput.focus){
+            getSearch(tiSearch.text)
+            return
+        }
+    }
+
     function search(){
         //if(!buscando)return
         lm.clear()
@@ -642,6 +488,7 @@ Item {
     }
 
     function getSearch(consulta){
+        lm.clear()
         let url=app.serverUrl+':'+app.portRequest+'/ppres/searchproducto?consulta='+consulta
         console.log('Get '+app.moduleName+' server from '+url)
         var req = new XMLHttpRequest();
@@ -679,6 +526,7 @@ Item {
                     break
                 }
             }*/
+            //console.log('Producto id: '+ json.productos[i]._id)
             lm.append(lm.addDato(
                           json.productos[i]._id,
                           json.productos[i].descripcion,
@@ -686,7 +534,7 @@ Item {
                           json.productos[i].precioinstalacion,
                           json.productos[i].precioabono,
                           json.productos[i].adicionalriesgo,
-                          json.productos[i].observaciones, cant
+                          json.productos[i].observaciones
                           ))
 
         }

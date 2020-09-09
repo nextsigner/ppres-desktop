@@ -24,13 +24,10 @@ ApplicationWindow {
     property int portFiles: 8081
 
     //Para la Tabla Alumnos
-    property string tableName1: 'certificados'
-    property string tableName2: 'alumnos'
+    //property string tableName1: 'certificados'
+    //property string tableName2: 'alumnos'
     //property var colsCertificados: ['folio', 'grado', 'nombre', 'fechanac', 'fechacert', 'idalumno']
     property var colsNamesProds: ['Descripción', 'Código', 'Precio de Instalación', 'Precio de Abono', 'Adicional Riesgo', 'Observaciones']
-
-    property var colsDatosAlumnos: ['nombre', 'edad', 'domicilio', 'telefono', 'email']
-    property var colsNameDatosAlumnos: ['Nombre', 'Edad', 'Domicilio', 'Teléfono', 'E-Mail']
 
     FontLoader{name: "FontAwesome"; source: "qrc:/fontawesome-webfont.ttf"}
     onModChanged: apps.setValue("umod", mod)//cMod=mod
@@ -224,10 +221,10 @@ ApplicationWindow {
                 xLogin.login()
                 return
             }
-//            if(xFormInsert.visible){
-//                xFormInsert.enterForm()
-//                return
-//            }
+            if(xFormSearch.visible){
+                xFormSearch.enterForm()
+                return
+            }
 //            if(xFormInsertDatosAl.visible){
 //                xFormInsertDatosAl.enterForm()
 //                return

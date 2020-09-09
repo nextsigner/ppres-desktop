@@ -58,7 +58,7 @@ Item{
                 clip: true
                 anchors.centerIn: parent
                 onTextChanged: r.textChanged(text)
-                Keys.onReturnPressed: r.seted(text)
+                Keys.onReturnPressed: Qt.quit()//r.seted(text)
                 //Keys.onDownPressed: Qt.quit()
                 color: r.fontColor
                 validator: r.regularExp

@@ -8,7 +8,7 @@ Item {
         spacing: app.fs
         UText{
             text: '<b>Acerca de '+app.moduleName+' </b>'
-            font.pixelSize: app.fs
+            font.pixelSize: app.fs*2
             anchors.horizontalCenter: parent.horizontalCenter
         }
         UText{
